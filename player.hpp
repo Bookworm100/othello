@@ -13,10 +13,12 @@ public:
     ~Player();
     Side AI;
     Side opponent;
-    Board board;
+    Board *board;
 
     Move *doMove(Move *opponentsMove, int msLeft);
     Move *firstMove();
+    Move *simpleMove();
+    int simpleScore(Move *move);
 
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;

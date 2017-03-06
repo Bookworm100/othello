@@ -11,7 +11,8 @@ Player::Player(Side side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
 
-    board = Board();
+    board = new Board();
+
     AI = side;
     if (AI == WHITE)
     {
@@ -49,10 +50,10 @@ Player::~Player() {
  * return nullptr.
  */
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
-
-    board.doMove(opponentsMove, opponent);
-
-    Move * move = firstMove();
+    std::cerr << "1" << std::endl;
+    board->doMove(opponentsMove, opponent);
+    std::cerr << "2" << std::endl;
+    Move * move = simpleMove();
     return move;
     
     /*
@@ -68,7 +69,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
  */
 Move *Player::firstMove()
 {
-    if (board.hasMoves(AI) == false)
+    if (board->hasMoves(AI) == false)
     {
         return nullptr;
     }
@@ -77,9 +78,9 @@ Move *Player::firstMove()
         for (int j = 0; j < 8; j++)
         {
             Move *move = new Move(i, j);
-            if (board.checkMove(move, AI) == true)
+            if (board->checkMove(move, AI) == true)
             {
-                board.doMove(move, AI);
+                board->doMove(move, AI);
                 return move;
             }
             delete move;
@@ -87,4 +88,82 @@ Move *Player::firstMove()
     }
 }
 
+
+Move *Player::simpleMove()
+{
+    std::cerr << "3" << std::endl;
+    if (board->hasMoves(AI) == false)
+    {
+        return nullptr;
+    }
+    int best_score = -10000;
+    Move *best_move = nullptr;
+    std::cerr << "4" << std::endl;
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            std::cerr << "5" << std::endl;
+            Move *move = new Move(i, j);
+            if (board->checkMove(move, AI) == true)
+            {
+                int score = simpleScore(move);
+                if (score > best_score)
+                {
+                    delete best_move;
+                    best_move = move;
+                    best_score = score;
+                }
+                else
+                {
+                    delete move;
+                }
+            }
+            else
+            {
+            std::cerr << "6" << std::endl;
+                delete move;
+            }
+        }
+    }
+    std::cerr << "7" << std::endl;
+    std::cerr << "x: " << best_move->getX() << std::endl;
+    std::cerr << "y: " << best_move->getY() << std::endl;
+    board->doMove(best_move, AI);
+    return best_move;
+}
+
+int Player::simpleScore(Move *move)
+{
+    Board *copy = board->copy();
+    copy->doMove(move, AI);
+    int score (copy->count(AI) - copy->count(opponent));
+/*
+    if (board->get(AI,0,0)) score += 2;
+    if (board->get(AI,0,7)) score += 2;
+    if (board->get(AI,7,0)) score += 2;
+    if (board->get(AI,7,7)) score += 2;
+    if (board->get(AI,1,1)) score -= 2;
+    if (board->get(AI,1,6)) score -= 2;
+    if (board->get(AI,6,1)) score -= 2;
+    if (board->get(AI,6,6)) score -= 2;
+    for (int i = 2; i < 6; i++)
+    {
+        if (board->get(AI,i,0)) score += 1;
+        if (board->get(AI,0,i)) score += 1;
+        if (board->get(AI,7,i)) score += 1;
+        if (board->get(AI,i,7)) score += 1;
+    }
+    if (board->get(AI,0,1)) score -= 1;
+    if (board->get(AI,1,0)) score -= 1;
+    if (board->get(AI,0,6)) score -= 1;
+    if (board->get(AI,6,0)) score -= 1;
+    if (board->get(AI,1,7)) score -= 1;
+    if (board->get(AI,7,1)) score -= 1;
+    if (board->get(AI,1,0)) score -= 1;
+    if (board->get(AI,6,7)) score -= 1;
+    if (board->get(AI,7,6)) score -= 1;
+*/
+    return score;
+}
 
