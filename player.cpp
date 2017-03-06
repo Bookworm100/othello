@@ -139,30 +139,30 @@ int Player::simpleScore(Move *move)
     copy->doMove(move, AI);
     int score (copy->count(AI) - copy->count(opponent));
 
-    if (board->get(AI,0,0)) score += 2;
-    if (board->get(AI,0,7)) score += 2;
-    if (board->get(AI,7,0)) score += 2;
-    if (board->get(AI,7,7)) score += 2;
-    if (board->get(AI,1,1)) score -= 2;
-    if (board->get(AI,1,6)) score -= 2;
-    if (board->get(AI,6,1)) score -= 2;
-    if (board->get(AI,6,6)) score -= 2;
+    if (copy->get(AI,0,0)) score += 3;
+    if (copy->get(AI,0,7)) score += 3;
+    if (copy->get(AI,7,0)) score += 3;
+    if (copy->get(AI,7,7)) score += 3;
+    if (copy->get(AI,1,1)) score -= 5;
+    if (copy->get(AI,1,6)) score -= 5;
+    if (copy->get(AI,6,1)) score -= 5;
+    if (copy->get(AI,6,6)) score -= 5;
     for (int i = 2; i < 6; i++)
     {
-        if (board->get(AI,i,0)) score += 1;
-        if (board->get(AI,0,i)) score += 1;
-        if (board->get(AI,7,i)) score += 1;
-        if (board->get(AI,i,7)) score += 1;
+        if (copy->get(AI,i,0)) score += 1;
+        if (copy->get(AI,0,i)) score += 1;
+        if (copy->get(AI,7,i)) score += 1;
+        if (copy->get(AI,i,7)) score += 1;
     }
-    if (board->get(AI,0,1)) score -= 1;
-    if (board->get(AI,1,0)) score -= 1;
-    if (board->get(AI,0,6)) score -= 1;
-    if (board->get(AI,6,0)) score -= 1;
-    if (board->get(AI,1,7)) score -= 1;
-    if (board->get(AI,7,1)) score -= 1;
-    if (board->get(AI,1,0)) score -= 1;
-    if (board->get(AI,6,7)) score -= 1;
-    if (board->get(AI,7,6)) score -= 1;
+    if (copy->get(AI,0,1)) score -= 3;
+    if (copy->get(AI,1,0)) score -= 3;
+    if (copy->get(AI,0,6)) score -= 3;
+    if (copy->get(AI,6,0)) score -= 3;
+    if (copy->get(AI,1,7)) score -= 3;
+    if (copy->get(AI,7,1)) score -= 3;
+    if (copy->get(AI,1,0)) score -= 3;
+    if (copy->get(AI,6,7)) score -= 3;
+    if (copy->get(AI,7,6)) score -= 3;
 
     return score;
 }
