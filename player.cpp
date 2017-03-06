@@ -138,7 +138,7 @@ int Player::simpleScore(Move *move)
     Board *copy = board->copy();
     copy->doMove(move, AI);
     int score (copy->count(AI) - copy->count(opponent));
-/*
+
     if (board->get(AI,0,0)) score += 2;
     if (board->get(AI,0,7)) score += 2;
     if (board->get(AI,7,0)) score += 2;
@@ -163,7 +163,7 @@ int Player::simpleScore(Move *move)
     if (board->get(AI,1,0)) score -= 1;
     if (board->get(AI,6,7)) score -= 1;
     if (board->get(AI,7,6)) score -= 1;
-*/
+
     return score;
 }
 
