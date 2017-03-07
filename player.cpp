@@ -53,7 +53,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     std::cerr << "1" << std::endl;
     board->doMove(opponentsMove, opponent);
     std::cerr << "2" << std::endl;
-    Move * move = simpleMove();
+    Move * move = minimax();
     return move;
     
     /*
@@ -165,5 +165,77 @@ int Player::simpleScore(Move *move)
     if (copy->get(AI,7,6)) score -= 3;
 
     return score;
+}
+
+Move *Player::minimax()
+{
+    std::cerr << "3" << std::endl;
+    if (board->hasMoves(AI) == false)
+    {
+        return nullptr;
+    }
+    int best_score = -10000;
+    Move *best_move = nullptr;
+    std::cerr << "4" << std::endl;
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            std::cerr << "5" << std::endl;
+            Move *move = new Move(i, j);
+            if (board->checkMove(move, AI) == true)
+            {
+                int score = minimaxScore(move);
+                if (score > best_score)
+                {
+            std::cerr << "6" << std::endl;
+                    delete best_move;
+                    best_move = move;
+                    best_score = score;
+                }
+                else
+                {
+                    delete move;
+                }
+            }
+            else
+            {
+            std::cerr << "7" << std::endl;
+                delete move;
+            }
+        }
+    }
+    std::cerr << "8" << std::endl;
+    std::cerr << "x: " << best_move->getX() << std::endl;
+    std::cerr << "y: " << best_move->getY() << std::endl;
+    board->doMove(best_move, AI);
+    return best_move;
+}
+
+int Player::minimaxScore(Move *move)
+{
+    int worst_score = 10000;
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            std::cerr << "9" << std::endl;
+            Board *copy = board->copy();
+            copy->doMove(move, AI);
+            Move *opp_move = new Move(i, j);
+            if (copy->checkMove(opp_move, opponent) == true)
+            {
+            std::cerr << "10" << std::endl;
+                copy->doMove(opp_move, opponent);
+                int score = (copy->count(AI) - copy->count(opponent));
+                if (score < worst_score)
+                {
+                    worst_score = score;
+                }
+            }
+            delete opp_move;
+        }
+    }
+    return worst_score;
 }
 

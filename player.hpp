@@ -18,7 +18,9 @@ public:
     Move *doMove(Move *opponentsMove, int msLeft);
     Move *firstMove();
     Move *simpleMove();
+    Move *minimax();
     int simpleScore(Move *move);
+    int minimaxScore(Move *move);
 
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;
