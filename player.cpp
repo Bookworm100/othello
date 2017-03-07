@@ -22,12 +22,6 @@ Player::Player(Side side) {
     {
         opponent = WHITE;
     }
-
-    /*
-     * Do any initialization you need to do here (setting up the board,
-     * precalculating things, etc.) However, remember that you will only have
-     * 30 seconds.
-     */
 }
 
 /*
@@ -51,15 +45,18 @@ Player::~Player() {
  */
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
     
-    board->doMove(opponentsMove, opponent);
-    
-    Move * move = minimax();
+    board->doMove(opponentsMove, opponent); //Updates board
+    Move *move;
+    if (testingMinimax)  //Checks if testing minimax
+    {
+        move = minimax();
+    }
+    else
+    {
+        move = simpleMove();
+    }
     return move;
     
-    /*
-     * Implement how moves your AI should play here. You should first
-     * process the opponent's opponents move before calculating your own move
-     */
 }
 
 /*
@@ -144,7 +141,7 @@ int Player::simpleScore(Move *move)
 {
     Board *copy = board->copy();
     copy->doMove(move, AI);
-    int score (copy->count(AI) - copy->count(opponent));
+    int score = (copy->count(AI) - copy->count(opponent));
 
     if (copy->get(AI,0,0)) score += 3; //If corner
     if (copy->get(AI,0,7)) score += 3;
@@ -242,7 +239,9 @@ int Player::minimaxScore(Move *move)
             {
             
                 copy->doMove(opp_move, opponent);
+
                 int score = (copy->count(AI) - copy->count(opponent)); //Get the score which is the difference between the opposing players
+ 
                 if (score < worst_score) //If the current score is lower
                 {
                     worst_score = score; //Set the new current score
