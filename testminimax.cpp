@@ -28,17 +28,19 @@ int main(int argc, char *argv[]) {
 
 
     /**
-     * TODO: Write code to set your player's internal board state to the
+     * Set player's internal board state to the
      * example state.
      */
-	player -> board  = board;
+     delete player -> board; //Free memory
+	player -> board  = board;  //Set player's board to example one
+	
     // Get player's move and check if it's right.
     Move *move = player->doMove(nullptr, 0);
 
     if (move != nullptr && move->x == 1 && move->y == 1) {
         std::cout << "Correct move: (1, 1)" << std::endl;;
     } else {
-        std::cout << "Wrong move: got ";
+        std::cout << "Wrong move: got "; 
         if (move == nullptr) {
             std::cout << "PASS";
         } else {
@@ -46,6 +48,8 @@ int main(int argc, char *argv[]) {
         }
         std::cout << ", expected (1, 1)" << std::endl;
     }
-
+	delete board;
+	delete player;
+	delete move;
     return 0;
 }
