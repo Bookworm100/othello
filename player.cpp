@@ -47,14 +47,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     
     board->doMove(opponentsMove, opponent); //Updates board
     Move *move;
-    if (testingMinimax)  //Checks if testing minimax
-    {
-        move = minimax();
-    }
-    else
-    {
-        move = simpleMove();
-    }
+    move = minimax();
     return move;
     
 }
@@ -90,6 +83,7 @@ Move *Player::firstMove()
  * Implements the heuristic algorithm
  *
  */
+/*
 Move *Player::simpleMove()
 {
    
@@ -131,17 +125,24 @@ Move *Player::simpleMove()
     board->doMove(best_move, AI); //Do this move
     return best_move;
 }
-
+*/
 /*
  *
  * Helper function for the heuristic algorithm
  *
  */
-int Player::simpleScore(Move *move)
+int Player::simpleScore(Board *copy)
 {
-    Board *copy = board->copy();
-    copy->doMove(move, AI);
-    int score = (copy->count(AI) - copy->count(opponent));
+//    Board *copy = board->copy();
+//    copy->doMove(move, AI);
+    int score;
+//    if (player == AI)
+//    {
+        score = (copy->count(AI) - copy->count(opponent));
+//    }
+//    else
+//    {
+//        score = (copy->count(opponent) - copy->count(AI));
 
     if (copy->get(AI,0,0)) score += 3; //If corner
     if (copy->get(AI,0,7)) score += 3;
@@ -194,7 +195,7 @@ Move *Player::minimax()
             if (board->checkMove(move, AI) == true) //If the move is valid, find its score!
             {
                 int score = minimaxScore(move);
-                if (score > best_score) //If we got a better score
+                if (score >= best_score) //If we got a better score
                 {
             
                     
@@ -232,23 +233,61 @@ int Player::minimaxScore(Move *move)
     {
         for (int j = 0; j < 8; j++) //Go through each possible move
         {
-            Board *copy = board->copy(); //Copy the board and iterate through possible opponent moves
-            copy->doMove(move, AI);
+            Board *copy1 = board->copy(); //Copy the board and iterate through possible opponent moves
+            copy1->doMove(move, AI);
             Move *opp_move = new Move(i, j);
-            if (copy->checkMove(opp_move, opponent) == true)
+            if (copy1->checkMove(opp_move, opponent) == true)
             {
             
-                copy->doMove(opp_move, opponent);
-
-                int score = (copy->count(AI) - copy->count(opponent)); //Get the score which is the difference between the opposing players
- 
-                if (score < worst_score) //If the current score is lower
+                copy1->doMove(opp_move, opponent);
+                int best_score = -10000;
+                for (int k = 0; k < 8; k++)
                 {
-                    worst_score = score; //Set the new current score
+                    for (int l = 0; l < 8; l++) //Go through each possible move
+                    {
+                        Board *copy2 = copy1->copy();
+                        Move *AI_move = new Move(k, l);
+                        if (copy2->checkMove(AI_move, AI) == true)
+                        {
+                            copy2->doMove(AI_move, AI);
+/*
+                            int score = simpleScore(copy2);
+                            if (score > best_score)
+*/
+                            int worst_score2 = 10000;
+                                for (int k = 0; k < 8; k++)
+                                {
+                                    for (int l = 0; l < 8; l++) //Go through each possible move
+                                    {
+                                        Board *copy3 = copy2->copy();
+                                        Move *opp_move2 = new Move(k, l);
+                                        if (copy3->checkMove(opp_move2, opponent) == true)
+                                        {
+                                            copy3->doMove(opp_move2, opponent);
+                                            int score = simpleScore(copy3);
+                                            if (score < worst_score2)
+                                            {
+                                            worst_score2 = score;
+                                            }
+                                        }
+                                    }
+                                
+                            }
+                            if (worst_score2 > best_score)
+                            {
+                                best_score = worst_score2;
+                            }
+                        }
+                    }
+                }
+ 
+                if (best_score < worst_score) //If the current score is lower
+                {
+                    worst_score = best_score; //Set the new current score
                 }
             }
             delete opp_move; //Free memory!
-            delete copy;
+            delete copy1;
         }
     }
     return worst_score; //Return worst score
