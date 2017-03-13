@@ -31,6 +31,8 @@ int main(int argc, char *argv[]) {
         // Get player's move and output to java wrapper.
         Move *playersMove = player->doMove(opponentsMove, msLeft);
         if (playersMove != nullptr) {
+        cerr << "BLAH" << endl;
+            cerr << playersMove->x << " " << playersMove->y << endl;
             cout << playersMove->x << " " << playersMove->y << endl;
         } else {
             cout << "-1 -1" << endl;
@@ -40,7 +42,7 @@ int main(int argc, char *argv[]) {
 
         // Delete move objects.
         if (opponentsMove != nullptr) delete opponentsMove;
-        if (playersMove != nullptr) delete playersMove;
+        if (playersMove != nullptr && !player -> testingNegamax) delete playersMove;
     }
 
     return 0;

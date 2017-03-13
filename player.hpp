@@ -14,6 +14,7 @@ public:
     Side AI;
     Side opponent;
     Board *board;
+    Move *best_move;
 
     Move *doMove(Move *opponentsMove, int msLeft);
     Move *firstMove();
@@ -21,9 +22,11 @@ public:
     Move *minimax();
     int simpleScore(Board *copy);
     int minimaxScore(Move *move);
+    int negamax(Board *board, Move *move, int depth, int alpha, int beta, int color);
 
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;
+    bool testingNegamax;
 };
 
 #endif
