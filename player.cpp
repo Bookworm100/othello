@@ -1,8 +1,3 @@
-#include "player.hpp"
-#include <climits>
-#include <vector>
-#include <algorithm>
-
 //This is a test commit
 
 /*
@@ -13,9 +8,8 @@
 Player::Player(Side side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
-	testingNegamax = true;
+
     board = new Board();
-    best_move = new Move(0, 0);
 
     AI = side;
     if (AI == WHITE)
@@ -49,40 +43,9 @@ Player::~Player() {
  */
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
     
-    std::cerr << "Reached22" << std::endl;
     board->doMove(opponentsMove, opponent); //Updates board
-<<<<<<< HEAD
     Move *move;
     move = minimax();
-=======
-    std::cerr << "Reached7" << std::endl;
-    Move *move = new Move(-1, -1);
-    std::cerr << "Reached8" << std::endl;
-    if (testingMinimax && !testingNegamax)  //Checks if testing minimax
-    {
-        move = minimax();
-    }
-    else if(!testingMinimax && !testingNegamax)
-    {
-        move = simpleMove();
-    }
-    else
-    {
-		int best_score1 = negamax(board, opponentsMove, 3, INT_MAX, INT_MIN, 1);
-		std::cerr << "Reached9" << std::endl;
-	
-		if(best_score1 != -50000)
-		{
-		
-			move = best_move;
-			board->doMove(best_move, AI); //Make the move
-		}
-		std::cerr << best_move << std::endl;
-		std::cerr << best_move->x << std::endl;
-		std::cerr << best_move ->y << std::endl;
-	}
-    
->>>>>>> 849336e35ebf8537976865d8136fb0957bbf05a7
     return move;
     
 }
@@ -203,8 +166,6 @@ int Player::simpleScore(Board *copy)
     if (copy->get(AI,6,7)) score -= 3;
     if (copy->get(AI,7,6)) score -= 3;
 
-	// delete copy
-
     return score;
 }
 
@@ -215,11 +176,11 @@ int Player::simpleScore(Board *copy)
  */
 Move *Player::minimax()
 {
+    
     if (board->hasMoves(AI) == false) //If there are no available valid moves!
     {
         return nullptr;
     }
-    
     int best_score = -10000; //Initialize best score and best move variables
     Move *best_move = nullptr;
     
@@ -330,111 +291,3 @@ int Player::minimaxScore(Move *move)
     return worst_score; //Return worst score
 }
 
-/*
- * 
- * implement a function negamax which does recursively and returns score (also do the best move and use vectors
-*/
-int Player::negamax(Board *board, Move *move, int depth, int alpha, int beta, int color)
-{
-    if(board->hasMoves(AI) == false) //If there are no available valid moves!
-    {
-        return -50000;
-    }
-    if(depth == 0)
-    {
-		return color * minimaxScore(move);
-	}
-	//variables that I find
-    //declare vector here
-    std::vector<Move>moves;
-    //Move *best_move = nullptr;
-    int best_score = -10000; //Initialize best score and best move variables
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            
-            Move move(i, j); //Check each move
-            if(color == 1)
-            {
-				if (board->checkMove(&move, AI) == true) //If the move is valid, find its score!
-				{
-					moves.push_back(move);
-				}
-			}
-			else
-			{
-				if (board->checkMove(&move, opponent) == true) //If the move is valid, find its score!
-				{
-					moves.push_back(move);
-				}
-			}
-		}
-	}
-	std::cerr << "Reached1" << std::endl;
-	for(Move i:moves)
-	{
-				//int score = 10000;
-				Board *copy1 = board->copy(); //Copy the board and iterate through possible opponent moves
-				/*if(find(moves.begin(), find(moves.end(), i)) != 1)--obviously this is incorrect
-				{
-					score = -negamax(copy1, &i, depth-1, -alpha-1, -alpha, -color); 
-					if(alpha < score < beta)
-					{
-						score = -negamax(copy1, &i, depth-1, -beta, -score, -color); 
-					}
-				}
-				else
-				{
-					score = negamax(copy1, &i, depth-1, -beta, -alpha, -color); 
-				}
-				alpha = max(alpha, score);
-				if(!(beta>alpha))
-                {
-					break;
-				}
-	
-	return alpha;*/
-				if(color == 1)
-				{
-					copy1 -> doMove(&i, AI);
-					int score = negamax(copy1, &i, depth-1, -beta, -alpha, -color); 
-					best_score = max(best_score, score); 
-					if(best_score == score)
-					{
-						best_move -> setX(i.x);
-						std::cerr << "Reached1.3" << std::endl;
-						best_move -> setY(i.y);
-					}
-					alpha = max(alpha, score);
-				}
-				else
-				{
-					copy1 -> doMove(&i, opponent);
-					int score = -negamax(copy1, &i, depth-1, -beta, -alpha, -color); 
-					best_score = min(best_score, score); 
-					if(best_score == score)
-					{
-						best_move -> setX(i.x);
-						std::cerr << "Reached1.3" << std::endl;
-						best_move -> setY(i.y);
-					}
-					alpha = max(alpha, score);
-				}
-				
-                if(!(beta>alpha))
-                {
-					break;
-				}
-				std::cerr << "Reached1" << std::endl;
-    }
-    //std::cerr <<"Reached2" <<std::endl;
-    
-    
-    
-    //std::cerr << "Reached3" << std::endl;
-    
-    
-	//std::cerr << "Reached4" << std::endl;
-   // return best_score;
-}
